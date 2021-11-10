@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head> </head>
+  <body>
+    <p id="connection-state">
+      Waiting for connect...
+    </p>
+    <script>
+      let elem = document.getElementById("connection-state");
+
+      initConnection();
+
+      function initConnection() {
+        let socket = new WebSocket("wss://" + window.location.host);
+
+        socket.onopen = () => {
+          elem.innerHTML = "Congrulations, you connected to the ws server.";
+        };
+        socket.onerror = () => {
+          elem.innerHTML = "Connection error.";
+          socket.close();
+          alert("error")
+          initConnection();
+        };
+        socket.onclose = () => {
+          elem.innerHTML = "Connection closed.";
+          socket.close();
+          alert("closed")
+          initConnection();
+        };
+        socket.onmessage = (e) => {
+          let data = JSON.parse(e.data)
+          elem.innerHTML += `<br>SERVER: ${data.message}`
+        }
+      }
+    </script>
+  </body>
+</html>
